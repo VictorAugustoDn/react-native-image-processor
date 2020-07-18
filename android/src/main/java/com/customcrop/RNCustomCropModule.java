@@ -1,5 +1,5 @@
 
-package fr.michaelvilleneuve.customcrop;
+package com.customcrop;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

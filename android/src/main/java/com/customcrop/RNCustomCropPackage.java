@@ -1,5 +1,5 @@
 
-package fr.michaelvilleneuve.customcrop;
+package com.customcrop;
 
 import java.util.Arrays;
 import java.util.Collections;
