@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.List;
 
 public class RNCustomCropModule extends ReactContextBaseJavaModule {
@@ -94,6 +95,7 @@ public class RNCustomCropModule extends ReactContextBaseJavaModule {
 
     Imgproc.warpPerspective(src, doc, m, doc.size());
 
+    String fileName = this.saveToDirectory(doc);
     Bitmap bitmap = Bitmap.createBitmap(doc.cols(), doc.rows(), Bitmap.Config.ARGB_8888);
     Utils.matToBitmap(doc, bitmap);
 
@@ -102,10 +104,32 @@ public class RNCustomCropModule extends ReactContextBaseJavaModule {
     byte[] byteArray = byteArrayOutputStream.toByteArray();
 
     WritableMap map = Arguments.createMap();
+    map.putString("imagePath", "file://" + fileName);
     map.putString("image", Base64.encodeToString(byteArray, Base64.DEFAULT));
     callback.invoke(null, map);
 
     m.release();
   }
 
+  private String saveToDirectory(Mat doc) {
+    String fileName;
+    String folderName = "documents";
+    String folderDir = this.reactContext.getCacheDir().toString();
+    File folder = new File( folderDir + "/" + folderName);
+    
+    if (!folder.exists()) {
+        boolean result = folder.mkdirs();
+    }
+    
+    fileName = folderDir + "/" + folderName + "/" + UUID.randomUUID() + ".jpg";
+    Mat endDoc = new Mat(
+      Double.valueOf(doc.size().width).intValue(), 
+      Double.valueOf(doc.size().height).intValue(),
+      CvType.CV_8UC4);
+
+    Core.flip(doc.t(), endDoc, 1);
+    Imgcodecs.imwrite(fileName, endDoc);
+    endDoc.release();
+    return fileName;
+  }
 }

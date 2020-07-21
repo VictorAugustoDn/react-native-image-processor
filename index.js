@@ -93,7 +93,7 @@ class CustomCrop extends Component {
                     dx: corner.x,
                     dy: corner.y,
                 },
-            ]),
+            ], { useNativeDriver: false }),
             onPanResponderRelease: () => {
                 corner.flattenOffset();
                 this.updateOverlayString();
@@ -123,7 +123,10 @@ class CustomCrop extends Component {
         NativeModules.CustomCropManager.crop(
             coordinates,
             this.state.image,
-            (err, res) => this.props.updateImage(res.image, coordinates),
+          (err, res) => {
+            console.log('res', res)
+            this.props.updateImage(res.image, res.imagePath, coordinates);
+          },
         );
     }
 
