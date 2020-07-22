@@ -33,6 +33,8 @@ import org.opencv.calib3d.Calib3d;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,11 +61,26 @@ public class RNCustomCropModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void crop(ReadableMap points, String imageUri, Callback callback) {
 
-    Point tl = new Point(points.getMap("topLeft").getDouble("x"), points.getMap("topLeft").getDouble("y"));
-    Point tr = new Point(points.getMap("topRight").getDouble("x"), points.getMap("topRight").getDouble("y"));
-    Point bl = new Point(points.getMap("bottomLeft").getDouble("x"), points.getMap("bottomLeft").getDouble("y"));
-    Point br = new Point(points.getMap("bottomRight").getDouble("x"), points.getMap("bottomRight").getDouble("y"));
+    Point tl = new Point(
+      points.getMap("topLeft").getDouble("x"), 
+      points.getMap("topLeft").getDouble("y")
+    );
 
+    Point tr = new Point(
+      points.getMap("topRight").getDouble("x"), 
+      points.getMap("topRight").getDouble("y")
+    );
+
+    Point bl = new Point(
+      points.getMap("bottomLeft").getDouble("x"), 
+      points.getMap("bottomLeft").getDouble("y")
+    );
+
+    Point br = new Point(
+      points.getMap("bottomRight").getDouble("x"), 
+      points.getMap("bottomRight").getDouble("y")
+    );
+    
     Mat src = Imgcodecs.imread(imageUri.replace("file://", ""), Imgproc.COLOR_BGR2RGB);
     Imgproc.cvtColor(src, src, Imgproc.COLOR_BGR2RGB);
 
@@ -87,31 +104,46 @@ public class RNCustomCropModule extends ReactContextBaseJavaModule {
     Mat src_mat = new Mat(4, 1, CvType.CV_32FC2);
     Mat dst_mat = new Mat(4, 1, CvType.CV_32FC2);
 
-    src_mat.put(0, 0, tl.x * ratio, tl.y * ratio, tr.x * ratio, tr.y * ratio, br.x * ratio, br.y * ratio, bl.x * ratio,
-        bl.y * ratio);
+    src_mat.put(
+      0, 
+      0, 
+      tl.x * ratio, 
+      tl.y * ratio, 
+      tr.x * ratio, 
+      tr.y * ratio, 
+      br.x * ratio, 
+      br.y * ratio, 
+      bl.x * ratio,
+      bl.y * ratio);
+
     dst_mat.put(0, 0, 0.0, 0.0, dw, 0.0, dw, dh, 0.0, dh);
 
     Mat m = Imgproc.getPerspectiveTransform(src_mat, dst_mat);
 
     Imgproc.warpPerspective(src, doc, m, doc.size());
 
-    String fileName = this.saveToDirectory(doc);
     Bitmap bitmap = Bitmap.createBitmap(doc.cols(), doc.rows(), Bitmap.Config.ARGB_8888);
     Utils.matToBitmap(doc, bitmap);
 
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
     byte[] byteArray = byteArrayOutputStream.toByteArray();
 
+    String imageData = Base64.encodeToString(byteArray, Base64.DEFAULT);
+    String fileName = this.saveToDirectory(imageData);
+
     WritableMap map = Arguments.createMap();
+    map.putDouble("height", dh);
+    map.putDouble("width", dw);
     map.putString("imagePath", "file://" + fileName);
-    map.putString("image", Base64.encodeToString(byteArray, Base64.DEFAULT));
+    map.putString("image", imageData);
     callback.invoke(null, map);
 
     m.release();
   }
 
-  private String saveToDirectory(Mat doc) {
+  private String saveToDirectory(String imageData) {
     String fileName;
     String folderName = "documents";
     String folderDir = this.reactContext.getCacheDir().toString();
@@ -122,14 +154,22 @@ public class RNCustomCropModule extends ReactContextBaseJavaModule {
     }
     
     fileName = folderDir + "/" + folderName + "/" + UUID.randomUUID() + ".jpg";
-    Mat endDoc = new Mat(
-      Double.valueOf(doc.size().width).intValue(), 
-      Double.valueOf(doc.size().height).intValue(),
-      CvType.CV_8UC4);
+    // Mat endDoc = new Mat(
+    //   Double.valueOf(doc.size().width).intValue(), 
+    //   Double.valueOf(doc.size().height).intValue(),
+    //   CvType.CV_8UC4);
 
-    Core.flip(doc.t(), endDoc, 1);
-    Imgcodecs.imwrite(fileName, endDoc);
-    endDoc.release();
+    // Core.flip(doc.t(), endDoc, 1);
+    // Imgcodecs.imwrite(fileName, endDoc);
+    // endDoc.release();
+
+    byte[] data = Base64.decode(imageData, Base64.DEFAULT);
+    try (OutputStream stream = new FileOutputStream(fileName)) {
+        stream.write(data);
+    } catch(Exception e) {
+
+    }
+
     return fileName;
   }
 }
