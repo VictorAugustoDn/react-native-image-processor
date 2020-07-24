@@ -1,20 +1,32 @@
-# React Native perspective image cropper 📐🖼
+# React Native Image Processor
 
-A component that allows you to perform custom image crop and perspective correction !
+A component that allows you to perform image processing!
 
-![Demo image](https://s3-eu-west-1.amazonaws.com/michaelvilleneuve/demo-crop.gif)
+##### Designed to work with React Native Document Scanner (My fork)
 
-##### Designed to work with React Native Document Scanner
+https://github.com/28harishkumar/react-native-document-scanner
 
-https://github.com/Michaelvilleneuve/react-native-document-scanner
+## Features (including under developement)
 
-![Demo gif](https://raw.githubusercontent.com/Michaelvilleneuve/react-native-document-scanner/master/images/demo.gif)
+1. Image Cropping
+   1. Simple quadrilateral cropping
+   2. Double quadrilateral cropping
+   3. Fixed size frame cropping
+2. Image Thumbnails
+3. Image to PDF
+4. Image Processing
+   1. Quadrilateral detection
+   2. Double Quadrilateral detection (like open book)
+   3. Background clear
+   4. Black & White Image
+   5. Image view-quaity enhancement
+   6. Merge multiple images in one
+5. Optical Character Recognition (OCR)
+6. Save Image to external storage or in cache
 
 ## Installation 🚀🚀
 
-`$ npm install react-native-perspective-image-cropper --save`
-
-`$ react-native link react-native-perspective-image-cropper`
+`$ npm install https://github.com/28harishkumar/react-native-image-processor --save`
 
 This library uses react-native-svg, you must install it too. See https://github.com/react-native-community/react-native-svg for more infos.
 
@@ -27,6 +39,7 @@ include ':openCVLibrary310'
 project(':openCVLibrary310').projectDir = new File(rootProject.projectDir,'../node_modules/react-native-perspective-image-cropper/android/openCVLibrary310')
 ```
 
+<!--
 ## Crop image
 
 - First get component ref
@@ -112,3 +125,4 @@ class CropView extends Component {
   }
 }
 ```
+-->
