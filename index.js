@@ -23,7 +23,7 @@ class CustomCrop extends Component {
       moving: false,
     };
 
-    const defaultCropHeight = Dimensions.get('window').height - this.state.viewHeight + 100;
+    const defaultCropHeight = Dimensions.get('window').height - this.state.viewHeight + 250;
 
     this.state = {
       ...this.state,
@@ -325,3 +325,4 @@ const s = (props) => ({
 });
 
 export default CustomCrop;
+export const ImageManupulator = NativeModules.CustomCropManager;

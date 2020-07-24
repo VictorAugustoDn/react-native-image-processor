@@ -1,24 +1,24 @@
 {
   "name": "react-native-perspective-image-cropper",
-  "version": "0.4.5",
-  "description": "React native library allowing you to make custom crop and perspective corrections on photos",
+  "version": "1.0.0",
+  "description": "Image manupulator for React Native",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Michaelvilleneuve/react-native-perspective-image-cropper"
+    "url": "https://github.com/28harishkumar/react-native-perspective-image-cropper"
   },
   "keywords": [
     "react-native",
     "scanner",
     "crop"
   ],
-  "author": "Michaël Villeneuve",
+  "author": "Harish Kumar",
   "license": "MIT",
   "peerDependencies": {
-    "react": "16.0.0-alpha.6",
-    "react-native": "0.44.3"
+    "react": "*",
+    "react-native": "*"
   }
 }
