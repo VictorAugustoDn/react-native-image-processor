@@ -149,6 +149,7 @@ class CustomCrop extends Component {
     NativeModules.CustomCropManager.crop(
       coordinates,
       this.state.image,
+      this.props.maxWidth,
       (err, res) => this.props.updateImage(res, coordinates),
     );
   }

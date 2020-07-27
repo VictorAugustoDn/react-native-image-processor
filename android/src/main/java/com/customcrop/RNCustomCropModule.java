@@ -29,14 +29,14 @@ public class RNCustomCropModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void crop(ReadableMap points, String imageUri, Callback callback) {
+  public void crop(ReadableMap points, String imageUri, int size, Callback callback) {
     Cropper cropper = new Cropper(this.reactContext);
-    cropper.crop(points, imageUri, callback);
+    cropper.crop(points, imageUri, size, callback);
   }
 
   @ReactMethod
-  public void storeThumbnail(String imageUri, int size, final Promise promise) {
+  public void storeThumbnail(String imageUri, int maxWidth, final Promise promise) {
     Cropper cropper = new Cropper(this.reactContext);
-    cropper.saveThumbnail(imageUri, size, promise);
+    cropper.saveThumbnail(imageUri, maxWidth, promise);
   }
 }

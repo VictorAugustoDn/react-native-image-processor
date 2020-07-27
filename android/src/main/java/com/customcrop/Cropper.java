@@ -44,7 +44,7 @@ public class Cropper {
     this.reactContext = reactContext;
   }
 
-  public void crop(ReadableMap points, String imageUri, Callback callback) {
+  public void crop(ReadableMap points, String imageUri, int maxWidth, Callback callback) {
 
     Point tl = new Point(
       points.getMap("topLeft").getDouble("x"), 
@@ -73,15 +73,15 @@ public class Cropper {
     double widthB = Math.sqrt(Math.pow(tr.x - tl.x, 2) + Math.pow(tr.y - tl.y, 2));
 
     double dw = Math.max(widthA, widthB);
-    int maxWidth = Double.valueOf(dw).intValue();
+    int docMaxWidth = Double.valueOf(dw).intValue();
 
     double heightA = Math.sqrt(Math.pow(tr.x - br.x, 2) + Math.pow(tr.y - br.y, 2));
     double heightB = Math.sqrt(Math.pow(tl.x - bl.x, 2) + Math.pow(tl.y - bl.y, 2));
 
     double dh = Math.max(heightA, heightB);
-    int maxHeight = Double.valueOf(dh).intValue();
+    int docMaxHeight = Double.valueOf(dh).intValue();
 
-    Mat doc = new Mat(maxHeight, maxWidth, CvType.CV_8UC4);
+    Mat doc = new Mat(docMaxHeight, docMaxWidth, CvType.CV_8UC4);
 
     Mat src_mat = new Mat(4, 1, CvType.CV_32FC2);
     Mat dst_mat = new Mat(4, 1, CvType.CV_32FC2);
@@ -106,6 +106,8 @@ public class Cropper {
 
     Bitmap bitmap = Bitmap.createBitmap(doc.cols(), doc.rows(), Bitmap.Config.ARGB_8888);
     Utils.matToBitmap(doc, bitmap);
+
+    bitmap = scaleDown(bitmap, maxWidth, true);
 
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     bitmap.compress(Bitmap.CompressFormat.JPEG, 99, byteArrayOutputStream);
