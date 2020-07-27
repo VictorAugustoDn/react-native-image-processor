@@ -112,7 +112,7 @@ public class Cropper {
 
     byte[] byteArray = byteArrayOutputStream.toByteArray();
 
-    String fileName = this.saveToDirectory(byteArray, "documents", true);
+    String fileName = this.saveToDirectory(byteArray, "cropped", false);
 
     WritableMap map = Arguments.createMap();
     map.putDouble("height", dh);
