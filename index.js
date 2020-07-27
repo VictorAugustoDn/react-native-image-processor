@@ -26,31 +26,31 @@ class CustomCrop extends Component {
       moving: false,
     };
 
-    const defaultCropHeight = dimHeight - this.state.viewHeight + 250;
+    const defaultCropHeight = this.state.viewHeight - 250;
 
     this.state = {
       ...this.state,
       topLeft: new Animated.ValueXY(
         props.rectangleCoordinates
           ? this.imageCoordinatesToViewCoordinates(props.rectangleCoordinates.topLeft)
-          : { x: 100, y: defaultCropHeight },
+          : { x: 100, y: 100 },
       ),
       topRight: new Animated.ValueXY(
         props.rectangleCoordinates
           ? this.imageCoordinatesToViewCoordinates(props.rectangleCoordinates.topRight)
-          : { x: dimWidth - 100, y: defaultCropHeight },
+          : { x: dimWidth - 100, y: 100 },
       ),
       bottomLeft: new Animated.ValueXY(
         props.rectangleCoordinates
           ? this.imageCoordinatesToViewCoordinates(props.rectangleCoordinates.bottomLeft)
-          : { x: 100, y: this.state.viewHeight - 100 },
+          : { x: 100, y: defaultCropHeight },
       ),
       bottomRight: new Animated.ValueXY(
         props.rectangleCoordinates
           ? this.imageCoordinatesToViewCoordinates(props.rectangleCoordinates.bottomRight)
           : {
             x: dimWidth - 100,
-            y: this.state.viewHeight - 100,
+            y: defaultCropHeight,
           },
       ),
     };
