@@ -56,12 +56,9 @@ class CustomCrop extends Component {
     };
     this.state = {
       ...this.state,
-      overlayPositions: `${this.state.topLeft.x._value},${
-        this.state.topLeft.y._value
-        } ${this.state.topRight.x._value},${this.state.topRight.y._value} ${
-        this.state.bottomRight.x._value
-        },${this.state.bottomRight.y._value} ${
-        this.state.bottomLeft.x._value
+      overlayPositions: `${this.state.topLeft.x._value},${this.state.topLeft.y._value
+        } ${this.state.topRight.x._value},${this.state.topRight.y._value} ${this.state.bottomRight.x._value
+        },${this.state.bottomRight.y._value} ${this.state.bottomLeft.x._value
         },${this.state.bottomLeft.y._value}`,
     };
 
@@ -82,43 +79,6 @@ class CustomCrop extends Component {
         },
       ], {
         useNativeDriver: false,
-        listener: (event, gestureState) => {
-          let _tlx = this.state.topLeft.x._value;
-          let _tly = this.state.topLeft.y._value;
-          let _trx = this.state.topRight.x._value;
-          let _try = this.state.topRight.y._value;
-          let _blx = this.state.bottomLeft.x._value;
-          let _bly = this.state.bottomLeft.y._value;
-          let _brx = this.state.bottomRight.x._value;
-          let _bry = this.state.bottomRight.y._value;
-
-          const { moveX, moveY } = gestureState;
-
-          switch (position) {
-            case 'topLeft':
-              _tlx = moveX;
-              _tly = moveY;
-              break;
-            case 'topRight':
-              _trx = moveX;
-              _try = moveY;
-              break;
-            case 'bottomLeft':
-              _blx = moveX;
-              _bly = moveY;
-              break;
-            case 'bottomRight':
-              _brx = moveX;
-              _bry = moveY;
-              break;
-            default:
-              break;
-          }
-
-          this.setState({
-            overlayPositions: `${_tlx},${_tly} ${_trx},${_try} ${_brx},${_bry} ${_blx},${_bly}`,
-          });
-        }
       }),
       onPanResponderRelease: () => {
         corner.flattenOffset();
@@ -156,12 +116,9 @@ class CustomCrop extends Component {
 
   updateOverlayString() {
     this.setState({
-      overlayPositions: `${this.state.topLeft.x._value},${
-        this.state.topLeft.y._value
-        } ${this.state.topRight.x._value},${this.state.topRight.y._value} ${
-        this.state.bottomRight.x._value
-        },${this.state.bottomRight.y._value} ${
-        this.state.bottomLeft.x._value
+      overlayPositions: `${this.state.topLeft.x._value},${this.state.topLeft.y._value
+        } ${this.state.topRight.x._value},${this.state.topRight.y._value} ${this.state.bottomRight.x._value
+        },${this.state.bottomRight.y._value} ${this.state.bottomLeft.x._value
         },${this.state.bottomLeft.y._value}`,
     });
   }
@@ -212,9 +169,9 @@ class CustomCrop extends Component {
           >
             <AnimatedPolygon
               ref={(ref) => (this.polygon = ref)}
-              fill={this.props.overlayColor || '#4c50da'}
+              fill={this.props.overlayColor}
               fillOpacity={this.props.overlayOpacity || 0.5}
-              stroke={this.props.overlayStrokeColor || '#4c50da'}
+              stroke={this.props.overlayStrokeColor}
               points={this.state.overlayPositions}
               strokeWidth={this.props.overlayStrokeWidth || 3}
             />
@@ -228,8 +185,14 @@ class CustomCrop extends Component {
           >
             <View
               style={[
+                s(this.props).handlerI,
+                { left: -10, top: -10 },
+              ]}
+            />
+            <View
+              style={[
                 s(this.props).handlerRound,
-                { left: 5, top: 5 },
+                { left: 31, top: 31 },
               ]}
             />
           </Animated.View>
@@ -242,8 +205,14 @@ class CustomCrop extends Component {
           >
             <View
               style={[
+                s(this.props).handlerI,
+                { left: 10, top: -10 },
+              ]}
+            />
+            <View
+              style={[
                 s(this.props).handlerRound,
-                { right: 5, top: 5 },
+                { right: 31, top: 31 },
               ]}
             />
           </Animated.View>
@@ -256,8 +225,14 @@ class CustomCrop extends Component {
           >
             <View
               style={[
+                s(this.props).handlerI,
+                { left: -10, top: 10 },
+              ]}
+            />
+            <View
+              style={[
                 s(this.props).handlerRound,
-                { left: 5, bottom: 5 },
+                { left: 31, bottom: 31 },
               ]}
             />
           </Animated.View>
@@ -270,8 +245,14 @@ class CustomCrop extends Component {
           >
             <View
               style={[
+                s(this.props).handlerI,
+                { left: 10, top: 10 },
+              ]}
+            />
+            <View
+              style={[
                 s(this.props).handlerRound,
-                { right: 5, bottom: 5 },
+                { right: 31, bottom: 31 },
               ]}
             />
           </Animated.View>
@@ -287,27 +268,24 @@ const s = (props) => ({
     position: 'absolute',
   },
   handlerI: {
-    // borderRadius: 0,
-    // height: 20,
-    // width: 20,
-    // backgroundColor: props.handlerColor || '#4c50da',
+    borderRadius: 0,
+    height: 20,
+    width: 20,
+    backgroundColor: props.handlerColor || '#4c50da',
   },
   handlerRound: {
-    width: 20,
-    height: 20,
-    margin: 15,
+    width: 39,
     position: 'absolute',
+    height: 39,
     borderRadius: 100,
-    backgroundColor: props.handlerColor || 'transparent',
-    borderWidth: 3,
-    borderColor: props.handlerBorderColor || '#4c50da',
+    backgroundColor: props.handlerColor || 'blue',
   },
   handler: {
-    height: 60,
-    width: 60,
+    height: 140,
+    width: 140,
     overflow: 'visible',
-    marginLeft: -30,
-    marginTop: -30,
+    marginLeft: -70,
+    marginTop: -70,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
