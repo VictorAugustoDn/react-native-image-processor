@@ -5,23 +5,20 @@
 
 RCT_EXPORT_MODULE();
 
-RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageUri:(NSString *)imageUri callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageUri:(NSString *)imageUri maxWidth:(NSString *)maxWidth callback:(RCTResponseSenderBlock)callback)
 {
     NSString *parsedImageUri = [imageUri stringByReplacingOccurrencesOfString:@"file://" withString:@""];
     NSURL *fileURL = [NSURL fileURLWithPath:parsedImageUri];
     CIImage *ciImage = [CIImage imageWithContentsOfURL:fileURL];
+    ciImage = [ciImage imageByApplyingOrientation:kCGImagePropertyOrientationRightMirrored];
     
-    CGPoint newLeft = CGPointMake([points[@"topLeft"][@"x"] floatValue], [points[@"topLeft"][@"y"] floatValue]);
-    CGPoint newRight = CGPointMake([points[@"topRight"][@"x"] floatValue], [points[@"topRight"][@"y"] floatValue]);
-    CGPoint newBottomLeft = CGPointMake([points[@"bottomLeft"][@"x"] floatValue], [points[@"bottomLeft"][@"y"] floatValue]);
-    CGPoint newBottomRight = CGPointMake([points[@"bottomRight"][@"x"] floatValue], [points[@"bottomRight"][@"y"] floatValue]);
+    float xScale = ciImage.extent.size.width / [points[@"width"] floatValue];
+    float yScale = ciImage.extent.size.height / [points[@"height"] floatValue];
     
-    newLeft = [self cartesianForPoint:newLeft height:[points[@"height"] floatValue] ];
-    newRight = [self cartesianForPoint:newRight height:[points[@"height"] floatValue] ];
-    newBottomLeft = [self cartesianForPoint:newBottomLeft height:[points[@"height"] floatValue] ];
-    newBottomRight = [self cartesianForPoint:newBottomRight height:[points[@"height"] floatValue] ];
-    
-    
+    CGPoint newLeft = CGPointMake([points[@"topLeft"][@"x"] floatValue] * xScale, [points[@"topLeft"][@"y"] floatValue] * yScale);
+    CGPoint newRight = CGPointMake([points[@"topRight"][@"x"] floatValue] * xScale, [points[@"topRight"][@"y"] floatValue] * yScale);
+    CGPoint newBottomLeft = CGPointMake([points[@"bottomLeft"][@"x"] floatValue] * xScale, [points[@"bottomLeft"][@"y"] floatValue] * yScale);
+    CGPoint newBottomRight = CGPointMake([points[@"bottomRight"][@"x"] floatValue] * xScale, [points[@"bottomRight"][@"y"] floatValue] * yScale);
     
     NSMutableDictionary *rectangleCoordinates = [[NSMutableDictionary alloc] init];
     
@@ -36,8 +33,21 @@ RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageUri:(NSString *)imageUri call
     CGImageRef cgimage = [context createCGImage:ciImage fromRect:[ciImage extent]];
     UIImage *image = [UIImage imageWithCGImage:cgimage];
     
-    NSData *imageToEncode = UIImageJPEGRepresentation(image, 0.8);
-    callback(@[[NSNull null], @{@"image": [imageToEncode base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength]}]);
+    NSData *imageToEncode = UIImageJPEGRepresentation(image, 1);
+    
+    NSString *dir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask, YES) firstObject];
+    NSString *storageFolder = @"RNRectangleScanner";
+    dir = [dir stringByAppendingPathComponent:storageFolder];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error = nil;
+    if(![fileManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:&error]){
+        NSLog(@"Failed to create directory \"%@\". Error: %@", dir, error);
+    }
+    
+    NSString *croppedFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
+    [imageToEncode writeToFile:croppedFilePath atomically:YES];
+    
+    callback(@[[NSNull null], @{@"image": croppedFilePath}]);
 }
 
 - (CGPoint)cartesianForPoint:(CGPoint)point height:(float)height {
