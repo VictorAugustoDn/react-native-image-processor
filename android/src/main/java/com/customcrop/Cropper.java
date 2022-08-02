@@ -140,7 +140,7 @@ public class Cropper {
         boolean result = folder.mkdirs();
     }
     
-    fileName = folderDir + "/" + folderName + "/" + UUID.randomUUID() + ".jpg";
+    fileName = folderDir + "/" + folderName + "/" + UUID.randomUUID() + ".png";
     return fileName;
   }
 
@@ -171,7 +171,7 @@ public class Cropper {
 
     // Convert to JPG
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
 
     // Write image
     byte[] byteArray = byteArrayOutputStream.toByteArray();
