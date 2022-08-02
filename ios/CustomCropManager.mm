@@ -33,7 +33,7 @@ RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageUri:(NSString *)imageUri maxW
     CGImageRef cgimage = [context createCGImage:ciImage fromRect:[ciImage extent]];
     UIImage *image = [UIImage imageWithCGImage:cgimage];
     
-    NSData *imageToEncode = UIImageJPEGRepresentation(image, 1);
+    NSData *imageToEncode = UIImagePNGRepresentation(image, 1);
     
     NSString *dir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask, YES) firstObject];
     NSString *storageFolder = @"RNRectangleScanner";
@@ -44,7 +44,7 @@ RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageUri:(NSString *)imageUri maxW
         NSLog(@"Failed to create directory \"%@\". Error: %@", dir, error);
     }
     
-    NSString *croppedFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.jpeg",(int)[NSDate date].timeIntervalSince1970]];
+    NSString *croppedFilePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"cropped_img_%i.png",(int)[NSDate date].timeIntervalSince1970]];
     [imageToEncode writeToFile:croppedFilePath atomically:YES];
     
     callback(@[[NSNull null], @{@"image": croppedFilePath}]);
