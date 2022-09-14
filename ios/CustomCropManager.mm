@@ -33,7 +33,7 @@ RCT_EXPORT_METHOD(crop:(NSDictionary *)points imageUri:(NSString *)imageUri maxW
     CGImageRef cgimage = [context createCGImage:ciImage fromRect:[ciImage extent]];
     UIImage *image = [UIImage imageWithCGImage:cgimage];
     
-    NSData *imageToEncode = UIImagePNGRepresentation(image, 1);
+    NSData *imageToEncode = UIImagePNGRepresentation(image);
     
     NSString *dir = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask, YES) firstObject];
     NSString *storageFolder = @"RNRectangleScanner";
