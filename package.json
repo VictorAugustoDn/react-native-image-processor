@@ -1,6 +1,6 @@
 {
   "name": "react-native-image-processor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Image manupulator for React Native",
   "main": "index.js",
   "scripts": {
